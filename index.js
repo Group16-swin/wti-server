@@ -20,9 +20,11 @@ connection.once('open', () => {
 
 const usersRouter = require('./routes/users');
 const responseRouter = require('./routes/response');
+// const wtiRouter = require('./routes/wti');
 
 app.use('/response', responseRouter);
 app.use('/users', usersRouter);
+// app.use('/wti', wtiRouter);
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);

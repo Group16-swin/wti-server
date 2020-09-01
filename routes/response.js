@@ -7,37 +7,25 @@ router.route('/').get((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-// router.route('/add').post((req, res) => {
-//   const username = req.body.username;
-//   const week = Number(req.body.week);
-//   const month = Number(req.body.month);
-//   const year = Number(req.body.year);
-//
-// const newResponse = new Response({
-//   username,
-//   week,
-//   month,
-//   year,
-// });
-//
-// newResponse.save()
-//   .then(() => res.json('Response added!'))
-//   .catch(err => res.status(400).json('Error: ' + err));
-// });
-//
-// router.route('/:id').get((req, res) => {
-//   Response.findById(req.params.id)
-//     .then(response => res.json(response))
-//     .catch(err => res.status(400).json('Error: ' + err));
-// });
-//
-// router.route('/:id').delete((req, res) => {
-//   Response.findByIdAndDelete(req.params.id)
-//     .then(() => res.json('Response deleted.'))
-//     .catch(err => res.status(400).json('Error: ' + err));
-// });
+router.route('/add').post((req, res) => {
+  const username = req.body.username;
+  const past = req.body.past;
+  const future = req.body.future;
+  const date = Date.parse(req.body.date);
 
-router.route('/wti/:id').get((req, res) => {
+  const newResponse = new Response({
+    username,
+    past,
+    future,
+    date,
+  });
+
+  newResponse.save()
+  .then(() => res.json('Response added!'))
+  .catch(err => res.status(400).json('Error: ' + err));
+});
+
+router.route('/wti').get((req, res) => {
 Response.aggregate([{
   $group: {
       _id: "$username",
@@ -76,6 +64,34 @@ Response.aggregate([{
   .then(response => res.json(response))
   .catch(err => res.status(400).json('Error: ' + err));
   //console.log(res);
+});
+
+
+router.route('/:id').get((req, res) => {
+  Response.findById(req.params.id)
+    .then(response => res.json(response))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+router.route('/:id').delete((req, res) => {
+  Response.findByIdAndDelete(req.params.id)
+    .then(() => res.json('Response deleted.'))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+router.route('/update/:id').post((req, res) => {
+  Response.findById(req.params.id)
+    .then(response => {
+      response.username = req.body.username;
+      response.past = Number(req.body.past);
+      response.future = Number(req.body.future);
+      response.date = Date.parse(req.body.date);
+
+    response.save()
+      .then(() => res.json('Response updated!'))
+      .catch(err => res.status(400).json('Error: ' + err));
+  })
+    .catch(err => res.status(400).json('Error: ' + err));
 });
 
 module.exports = router;
